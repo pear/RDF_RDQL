@@ -20,11 +20,13 @@ http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.</description>
     </maintainer>
   </maintainers>
   <release>
-    <version>0.1.0alpha1</version>
-    <date>2004-09-21</date>
+    <version>0.2.0</version>
+    <date>2004-12-28</date>
     <license>LGPL</license>
     <state>alpha</state>
-    <notes>- initial release</notes>
+    <notes>- fixed several incorrect calls to RDF::raiseError()
+- propagate PEAR errors to the user
+- cosmetic fixes</notes>
     <deps>
       <dep type="php" rel="ge" version="4.2.0" optional="no"/>
       <dep type="pkg" rel="ge" version="1.0b1" optional="no">PEAR</dep>
@@ -57,6 +59,24 @@ http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.</description>
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.2.0</version>
+      <date>2004-12-28</date>
+      <license>LGPL</license>
+      <state>alpha</state>
+      <notes>- fixed several incorrect calls to RDF::raiseError()
+- propagate PEAR errors to the user
+- cosmetic fixes</notes>
+    </release>
+    <release>
+      <version>0.2.0alpha1</version>
+      <date>2004-12-28</date>
+      <license>LGPL</license>
+      <state>alpha</state>
+      <notes>- fixed several incorrect calls to RDF::raiseError()
+- propagate PEAR errors to the user
+- cosmetic fixes</notes>
+    </release>
     <release>
       <version>0.1.0alpha1</version>
       <date>2004-09-21</date>

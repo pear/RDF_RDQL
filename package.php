@@ -2,9 +2,11 @@
 
 require_once 'PEAR/PackageFileManager.php';
 
-$version = '0.1.0alpha1';
+$version = '0.2.0';
 $notes = <<<EOT
-- initial release
+- fixed several incorrect calls to RDF::raiseError()
+- propagate PEAR errors to the user
+- cosmetic fixes
 EOT;
 
 $description =<<<EOT
@@ -12,7 +14,7 @@ This package is a port of the RDQL part of the RDF API for PHP (aka RAP):
 http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.
 EOT;
 
-$package = new PEAR_PackageFileManager();
+$package =& new PEAR_PackageFileManager();
 
 $result = $package->setOptions(array(
     'package'           => 'RDF_RDQL',
