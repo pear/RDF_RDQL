@@ -90,9 +90,9 @@ USING desc FOR <http://description.org/schema/>
 <?php
 } else {
     // Process the query if submitted
-    include 'RDF.php';
-    include 'RDF/Model/Memory.php';
-    include 'RDF/RDQL.php';
+    require_once 'RDF.php';
+    require_once 'RDF/Model/Memory.php';
+    require_once 'RDF/RDQL.php';
 
     echo "<center><a href='" . $HTTP_SERVER_VARS['PHP_SELF'] . "'>
          <h2>Go back to input form.</h2></a></center>";
@@ -101,7 +101,7 @@ USING desc FOR <http://description.org/schema/>
         $queryString = stripslashes($_POST['query_string']); 
         // Parse the query
         $parser =& new RDF_RDQL_Parser();
-        $parsed = &$parser->parseQuery($queryString); 
+        $parsed =& $parser->parseQuery($queryString); 
         // If more than one source file provided show an error message
         if (count($parsed['sources']) > 1) {
             echo "<center><p class='rdql_comment'>We're sorry, but this Online Demo allows you to query only one document</p></center>";

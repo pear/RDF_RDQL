@@ -6,9 +6,10 @@
 <body>
 
 <?php
-include 'RDF.php';
-include 'RDF/Model/Memory.php';
-include 'RDF/RDQL.php';
+require_once 'RDF.php';
+require_once 'RDF/Model/Memory.php';
+require_once 'RDF/RDQL.php';
+
 // Filename of an RDF document
 $base = "employees.rdf";
 // Create a new Model_Memory
