@@ -68,6 +68,9 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
         // filter tuples
         if (isset($parsedQuery['filters'])) {
             $res = $this->filterTuples($res);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
         }
 
         // select variables to be returned
@@ -123,8 +126,8 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
                 if ($key == 'object') {
                     $param['object']['is_a'] = 'ANY';
                     $param['object']['string'] = 'ANY';
-                    $param['object']['lang'] = NULL;
-                    $param['object']['dtype'] = NULL;
+                    $param['object']['lang'] = null;
+                    $param['object']['dtype'] = null;
                 } else {
                     $param[$key] = 'ANY';
                 }
@@ -219,7 +222,10 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
             if ($intBindings) {
                 foreach ($res->triples as $triple) {
                     if (!$this->_checkIntBindings($triple, $intBindings)) {
-                        $res->remove($triple);
+                        $result = $res->remove($triple);
+                        if (PEAR::isError($result)) {
+                            return $result;
+                        }
                     }
                 }
             }
@@ -239,12 +245,18 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
                 ) {
                     if ($obj_is == 'Literal' && is_a($t->obj, 'RDF_Literal')) {
                         if ($this->_equalsLangDtype($t->getObject(), $objLang, $objDtype)) {
-                            $res->add($t);
+                            $result = $res->add($t);
+                            if (PEAR::isError($result)) {
+                                return $result;
+                            }
                         }
                     } elseif ($obj_is == 'ANY'
                         || ($obj_is == 'RDF_Resource' && !is_a($t->obj, 'RDF_Literal'))
                     ) {
-                        $res->add($t);
+                        $result = $res->add($t);
+                        if (PEAR::isError($result)) {
+                            return $result;
+                        }
                     }
                 }
             }
@@ -257,11 +269,18 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
                 ) {
                     if ($obj_is == 'RDF_Literal' && is_a($t->obj, 'RDF_Literal')) {
                         if ($this->_equalsLangDtype($t->getObject(), $objLang, $objDtype)) {
-                            $res->add($t);
+                            $result = $res->add($t);
+                            if (PEAR::isError($result)) {
+                                return $result;
+                            }
                         }
                     } elseif ($obj_is == 'ANY'
-                        || ($obj_is == 'RDF_Resource' && !is_a($t->obj, 'RDF_Literal'))) {
-                        $res->add($t);
+                        || ($obj_is == 'RDF_Resource' && !is_a($t->obj, 'RDF_Literal'))
+                    ) {
+                        $result = $res->add($t);
+                        if (PEAR::isError($result)) {
+                            return $result;
+                        }
                     }
                 }
             }
@@ -270,7 +289,10 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
         if ($intBindings) {
             foreach ($res->triples as $triple) {
                 if (!$this->_checkIntBindings($triple, $intBindings)) {
-                    $res->remove($triple);
+                    $result = $res->remove($triple);
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
                 }
             }
         }

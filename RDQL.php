@@ -122,10 +122,10 @@ class RDF_RDQL
     {
         if (!is_a($model, 'RDF_Model')) {
             $errmsg = 'Parameter is not an RDF_Model';
-            return RDF::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
+            return RDF_RDQL::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
         }
         $parser =& new RDF_RDQL_Parser();
-        $parsedQuery = &$parser->parseQuery($queryString);
+        $parsedQuery =& $parser->parseQuery($queryString);
         $model_class = get_class($model);
         // this method can only query this model
         // if another model was specified in the from clause throw an error
@@ -140,15 +140,15 @@ class RDF_RDQL
         } elseif (strtolower($model_class) == 'rdf_model_memory') {
             if (isset($parsedQuery['sources'][1])) {
                 $errmsg = 'Method can only query this Model_Memory';
-                return RDF::raiseError(RDF_ERROR_MISMATCH, null, null, $errmsg);
+                return RDF_RDQL::raiseError(RDF_ERROR_MISMATCH, null, null, $errmsg);
             }
             $engine =& new RDF_RDQL_Engine_Memory();
         } else {
             $errmsg = 'Model type is not supported: ' . $model_class;
-            return RDF::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
+            return RDF_RDQL::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
         }
 
-        $res = &$engine->queryModel($model, $parsedQuery, $returnNodes);
+        $res =& $engine->queryModel($model, $parsedQuery, $returnNodes);
 
         return $res;
     }
@@ -171,10 +171,14 @@ class RDF_RDQL
     {
         if (!is_a($model, 'RDF_Model')) {
             $errmsg = 'Parameter is not an RDF_Model';
-            return RDF::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
+            return RDF_RDQL::raiseError(RDF_RDQL_ERROR, null, null, $errmsg);
         }
 
-        return new RDF_RDQL_ResultIterator(RDF_RDQL::RDQLQuery($model, $queryString, $returnNodes));
+        $result =& RDF_RDQL::RDQLQuery($model, $queryString, $returnNodes);
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+        return new RDF_RDQL_ResultIterator($result);
     }
 }
 

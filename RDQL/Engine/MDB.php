@@ -76,11 +76,14 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      */
     function &queryModel(&$model, &$parsedQuery, $returnNodes = true)
     {
-        $this->parsedQuery = &$parsedQuery;
+        $this->parsedQuery =& $parsedQuery;
 
         $sql = $this->generateSql($model->modelID);
-        $recordSet = &$model->dbConn->queryAll($sql);
+        $recordSet =& $model->dbConn->queryAll($sql);
         $queryResult = $this->filterQueryResult($recordSet);
+        if (PEAR::isError($queryResult)) {
+            return $queryResult;
+        }
 
         if ($returnNodes) {
             return $this->toNodes($queryResult);
@@ -413,10 +416,19 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
             foreach ($var as $varname => $varProperties) {
                 if ($varProperties['nType'] == 'r') {
                     $res[$n][$varname] =& RDF_Resource::factory($varProperties['value']);
+                    if (PEAR::isError($res[$n][$varname])) {
+                        return $res[$n][$varname];
+                    }
                 } elseif ($varProperties['nType'] == 'b') {
                     $res[$n][$varname] =& RDF_BlankNode::factory($varProperties['value']);
+                    if (PEAR::isError($res[$n][$varname])) {
+                        return $res[$n][$varname];
+                    }
                 } else {
                     $res[$n][$varname] =& RDF_Literal::factory($varProperties['value'], $varProperties['l_lang']);
+                    if (PEAR::isError($res[$n][$varname])) {
+                        return $res[$n][$varname];
+                    }
                     if ($varProperties['l_dtype'] != null)
                         $res[$n][$varname]->setDataType($varProperties['l_dtype']);
                 }

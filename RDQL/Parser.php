@@ -74,10 +74,19 @@ class RDF_RDQL_Parser extends RDF_Object {
     function &parseQuery($queryString)
     {
         $cleanQueryString = $this->removeComments($queryString);
+        if (PEAR::isError($cleanQueryString)) {
+            return $cleanQueryString;
+        }
         $this->tokenize($cleanQueryString);
-        $this->startParsing();
+        $result = $this->startParsing();
+        if (PEAR::isError($result)) {
+            return $result;
+        }
         if ($this->parsedQuery['selectVars'][0] == '*') {
             $this->parsedQuery['selectVars'] = $this->findAllQueryVariables();
+            if (PEAR::isError($this->parsedQuery['selectVars'])) {
+                return $this->parsedQuery['selectVars'];
+            }
         } else {
             $this->_checkSelectVars();
         }
@@ -194,7 +203,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      */
     function startParsing()
     {
-        $this->parseSelect();
+        return $this->parseSelect();
     }
 
     /**
@@ -267,7 +276,11 @@ class RDF_RDQL_Parser extends RDF_Object {
                     return $this->parseWhere();
                 }
                 if ($token{0} == '?') {
-                    $this->parsedQuery['selectVars'][] = $this->_validateVar($token, 'SELECT');
+                    $result = $this->_validateVar($token, 'SELECT');
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
+                    $this->parsedQuery['selectVars'][] = $result;
                     $commaExpected = true;
                     $comma = false;
                 } else {
@@ -317,12 +330,16 @@ class RDF_RDQL_Parser extends RDF_Object {
                 }
             } else {
                 $token = current($this->tokens);
-                $this->parsedQuery['sources'][++$i]['value'] = $this->_validateURI($token, RDF_RDQL_ERROR_SOURCE);
-                if ($token{0} != '<') {
-                    $this->parsedQuery['sources'][$i]['is_qname'] = TRUE;
+                $result = $this->_validateURI($token, RDF_RDQL_ERROR_SOURCE);
+                if (PEAR::isError($result)) {
+                    return $result;
                 }
-                $commaExpected = TRUE;
-                $comma = FALSE;
+                $this->parsedQuery['sources'][++$i]['value'] = $result;
+                if ($token{0} != '<') {
+                    $this->parsedQuery['sources'][$i]['is_qname'] = true;
+                }
+                $commaExpected = true;
+                $comma = false;
             }
         }
         $errmsg = 'WHERE clause missing';
@@ -368,7 +385,10 @@ class RDF_RDQL_Parser extends RDF_Object {
 
             if (current($this->tokens) == ',') {
                 $comma = true;
-                $this->_checkComma($commaExpected, 'WHERE');
+                $result = $this->_checkComma($commaExpected, 'WHERE');
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             } else {
                 if (current($this->tokens) != '(') {
                     $errmsg = current($this->tokens) . "' - '(' expected";
@@ -379,12 +399,21 @@ class RDF_RDQL_Parser extends RDF_Object {
 
                 $this->parsedQuery['patterns'][$i]['subject'] =
                     $this->_validateVarUri(current($this->tokens));
-                $this->_checkComma(true, 'WHERE');
+                $result = $this->_checkComma(true, 'WHERE');
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
                 $this->parsedQuery['patterns'][$i]['predicate'] =
                     $this->_validateVarUri(current($this->tokens));
-                $this->_checkComma(true, 'WHERE');
-                $this->parsedQuery['patterns'][$i++]['object'] =
-                    $this->_validateVarUriLiteral(current($this->tokens));
+                $result = $this->_checkComma(true, 'WHERE');
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
+                $result = $this->_validateVarUriLiteral(current($this->tokens));
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
+                $this->parsedQuery['patterns'][$i++]['object'] = $result;
                 $this->_clearWhiteSpaces();
 
                 if (current($this->tokens) != ')') {
@@ -422,11 +451,17 @@ class RDF_RDQL_Parser extends RDF_Object {
             $token = $this->tokens[$k];
 
             if (!strcasecmp('USING', $token)) {
-                $this->parseFilter($n, $filterStr);
+                $result = $this->parseFilter($n, $filterStr);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
                 unset($this->tokens[$k]);
                 return $this->parseUsing();
             } elseif ($token == ',') {
-                $this->parseFilter($n, $filterStr);
+                $result = $this->parseFilter($n, $filterStr);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
                 $filterStr = '';
                 $token = '';
                 ++$n;
@@ -434,7 +469,7 @@ class RDF_RDQL_Parser extends RDF_Object {
             $filterStr .= $token;
             unset($this->tokens[$k]);
         }
-        $this->parseFilter($n, $filterStr);
+        return $this->parseFilter($n, $filterStr);
     }
 
     /**
@@ -452,9 +487,15 @@ class RDF_RDQL_Parser extends RDF_Object {
             $this->_clearWhiteSpaces();
             if (current($this->tokens) == ',') {
                 $comma = true;
-                $this->_checkComma($commaExpected, 'USING');
+                $result = $this->_checkComma($commaExpected, 'USING');
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             } else {
                 $prefix = $this->_validatePrefix(current($this->tokens));
+                if (PEAR::isError($prefix)) {
+                    return $prefix;
+                }
                 $this->_clearWhiteSpaces();
 
                 if (strcasecmp('FOR', current($this->tokens))) {
@@ -464,8 +505,11 @@ class RDF_RDQL_Parser extends RDF_Object {
                 unset($this->tokens[key($this->tokens)]);
                 $this->_clearWhiteSpaces();
 
+                $result = $this->_validateURI(current($this->tokens), 'USING');
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
                 $this->parsedQuery['ns'][$prefix] =
-                    $this->_validateUri(current($this->tokens), 'USING');
                 $this->_clearWhiteSpaces();
                 $commaExpected = true;
                 $comma = false;
@@ -546,8 +590,14 @@ class RDF_RDQL_Parser extends RDF_Object {
         $eqExprs = array();
         preg_match_all($reg_ex, $filterStr, $eqExprs);
         foreach ($eqExprs[0] as $i => $eqExpr) {
-            $this->_checkRegExQuotation($filterStr, $eqExprs[3][$i], $eqExprs[5][$i]);
+            $result = $this->_checkRegExQuotation($filterStr, $eqExprs[3][$i], $eqExprs[5][$i]);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
             $parsedFilter['regexEqExprs'][$i]['var'] = $this->_isDefined($eqExprs[1][$i]);
+            if (PEAR::isError($parsedFilter['regexEqExprs'][$i]['var'])) {
+                return $parsedFilter['regexEqExprs'][$i]['var'];
+            }
             $parsedFilter['regexEqExprs'][$i]['operator'] = $eqExprs[2][$i];
             $parsedFilter['regexEqExprs'][$i]['regex'] = $eqExprs[4][$i];
 
@@ -559,13 +609,20 @@ class RDF_RDQL_Parser extends RDF_Object {
         preg_match_all($reg_ex, $filterStr, $eqExprs);
         foreach ($eqExprs[0] as $i => $eqExpr) {
             $parsedFilter['strEqExprs'][$i]['var'] = $this->_isDefined($eqExprs[1][$i]);
+            if (PEAR::isError($parsedFilter['strEqExprs'][$i]['var'])) {
+                return $parsedFilter['strEqExprs'][$i]['var'];
+            }
             $parsedFilter['strEqExprs'][$i]['operator'] = strtolower($eqExprs[2][$i]);
             $parsedFilter['strEqExprs'][$i]['value'] = trim($eqExprs[3][$i],"'\"");
             $parsedFilter['strEqExprs'][$i]['value_type'] = 'Literal';
             $parsedFilter['strEqExprs'][$i]['value_lang'] = substr($eqExprs[4][$i], 1);
             $dtype = substr($eqExprs[5][$i], 2);
             if ($dtype) {
-                $parsedFilter['strEqExprs'][$i]['value_dtype'] = $this->_validateUri($dtype, RDF_RDQL_ERROR_AND);
+                $result = $this->_validateURI($dtype, RDF_RDQL_ERROR_AND);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
+                $parsedFilter['strEqExprs'][$i]['value_dtype'] = $result;
                 if ($dtype{0} != '<') {
                     $parsedFilter['strEqExprs'][$i]['value_dtype_is_qname'] = true;
                 }
@@ -581,24 +638,36 @@ class RDF_RDQL_Parser extends RDF_Object {
         preg_match_all($reg_ex, $filterStr, $eqExprs);
         foreach ($eqExprs[0] as $i => $eqExpr) {
             $parsedFilter['strEqExprs'][$ii]['var'] = $this->_isDefined($eqExprs[1][$i]);
+            if (PEAR::isError($parsedFilter['strEqExprs'][$ii]['var'])) {
+                return $parsedFilter['strEqExprs'][$ii]['var'];
+            }
             $parsedFilter['strEqExprs'][$ii]['operator'] = strtolower($eqExprs[2][$i]);
             $parsedFilter['strEqExprs'][$ii]['value'] = $this->_isDefined($eqExprs[3][$i]);
+            if (PEAR::isError($parsedFilter['strEqExprs'][$ii]['value'])) {
+                return $parsedFilter['strEqExprs'][$ii]['value'];
+            }
             $parsedFilter['strEqExprs'][$ii]['value_type'] = 'variable';
 
             $filterStr = str_replace($eqExprs[0][$i], " ##strEqExpr_$ii## ", $filterStr);
             $ii++;
         }
         // parse ?var [eq | ne] <URI> or ?var [eq | ne] prefix:local_name
-        $reg_ex  = "/(\?[a-zA-Z0-9_]+)\s+(eq|ne)\s+((<\S+>)|(\S+:\S*))/i";
+        $reg_ex = "/(\?[a-zA-Z0-9_]+)\s+(eq|ne)\s+((<\S+>)|(\S+:\S*))/i";
         preg_match_all($reg_ex, $filterStr, $eqExprs);
         foreach ($eqExprs[0] as $i => $eqExpr) {
             $parsedFilter['strEqExprs'][$ii]['var'] = $this->_isDefined($eqExprs[1][$i]);
+            if (PEAR::isError($parsedFilter['strEqExprs'][$ii]['var'])) {
+                return $parsedFilter['strEqExprs'][$ii]['var'];
+            }
             $parsedFilter['strEqExprs'][$ii]['operator'] = strtolower($eqExprs[2][$i]);
             if ($eqExprs[4][$i]) {
                 $parsedFilter['strEqExprs'][$ii]['value'] = trim($eqExprs[4][$i], "<>");
                 $parsedFilter['strEqExprs'][$ii]['value_type'] = 'URI';
             } else if($eqExprs[5][$i]) {
-                $this->_validateQName($eqExprs[5][$i], RDF_RDQL_ERROR_AND);
+                $result = $this->_validateQName($eqExprs[5][$i], RDF_RDQL_ERROR_AND);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
                 $parsedFilter['strEqExprs'][$ii]['value'] = $eqExprs[5][$i];
                 $parsedFilter['strEqExprs'][$ii]['value_type'] = 'QName';
             }
@@ -611,7 +680,11 @@ class RDF_RDQL_Parser extends RDF_Object {
         // all that is left are numerical expressions and place holders for the above expressions
         preg_match_all("/\?[a-zA-Z0-9_]+/", $filterStr, $vars);
         foreach ($vars[0] as $var) {
-            $parsedFilter['numExprVars'][] = $this->_isDefined($var);
+            $result = $this->_isDefined($var);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+            $parsedFilter['numExprVars'][] = $result;
         }
 
         return $parsedFilter;
@@ -665,7 +738,11 @@ class RDF_RDQL_Parser extends RDF_Object {
         if (isset($this->parsedQuery['sources'])) {
             foreach ($this->parsedQuery['sources'] as $n => $source) {
                 if (isset($source['is_qname'])) {
-                    $this->parsedQuery['sources'][$n] = $this->_replaceNamespacePrefix($source['value'], RDF_RDQL_ERROR_SOURCE);
+                    $result = $this->_replaceNamespacePrefix($source['value'], RDF_RDQL_ERROR_SOURCE);
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
+                    $this->parsedQuery['sources'][$n] = $result;
                 } else {
                     foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                         $source['value'] = eregi_replace("$prefix:", $uri, $source['value']);
@@ -680,15 +757,21 @@ class RDF_RDQL_Parser extends RDF_Object {
             foreach ($pattern as $key => $v) {
                 if ($v['value'] && $v['value']{0} != '?') {
                     if (isset($v['is_qname'])) {
-                        $this->parsedQuery['patterns'][$n][$key]['value']
-                            = $this->_replaceNamespacePrefix($v['value'], RDF_RDQL_ERROR_WHERE);
+                        $result = $this->_replaceNamespacePrefix($v['value'], RDF_RDQL_ERROR_WHERE);
+                        if (PEAR::isError($result)) {
+                            return $result;
+                        }
+                        $this->parsedQuery['patterns'][$n][$key]['value'] = $result;
                         unset($this->parsedQuery['patterns'][$n][$key]['is_qname']);
                     } else { // is quoted URI (== <URI>) or Literal
                         if (isset($this->parsedQuery['patterns'][$n][$key]['is_literal'])) {
                             if (isset($this->parsedQuery['patterns'][$n][$key]['l_dtype_is_qname'])) {
-                                $this->parsedQuery['patterns'][$n][$key]['l_dtype']
-                                    = $this->_replaceNamespacePrefix($v['l_dtype'], RDF_RDQL_ERROR_WHERE);
-                                unset($this->parsedQuery['patterns'][$n][$key]['l_dtype_is_qname']);	
+                                $result = $this->_replaceNamespacePrefix($v['l_dtype'], RDF_RDQL_ERROR_WHERE);
+                                if (PEAR::isError($result)) {
+                                    return $result;
+                                }
+                                $this->parsedQuery['patterns'][$n][$key]['l_dtype'] = $result;
+                                unset($this->parsedQuery['patterns'][$n][$key]['l_dtype_is_qname']);
                             } else {
                                 foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                                     $this->parsedQuery['patterns'][$n][$key]['l_dtype']
@@ -711,8 +794,11 @@ class RDF_RDQL_Parser extends RDF_Object {
             foreach ($this->parsedQuery['filters'] as $n => $filter) {
                 foreach ($filter['strEqExprs'] as $i => $expr) {
                     if ($expr['value_type'] == 'QName') {
-                        $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value']
-                            = $this->_replaceNamespacePrefix($expr['value'], RDF_RDQL_ERROR_AND);
+                        $result = $this->_replaceNamespacePrefix($expr['value'], RDF_RDQL_ERROR_AND);
+                        if (PEAR::isError($result)) {
+                            return $result;
+                        }
+                        $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value'] = $result;
                         $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_type'] = 'URI';
                     }
                     if ($expr['value_type'] == 'URI') {
@@ -722,8 +808,11 @@ class RDF_RDQL_Parser extends RDF_Object {
                         }
                     } elseif ($expr['value_type'] == 'Literal') {
                         if (isset($expr['value_dtype_is_qname'])) {
-                            $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype']
-                                = $this->_replaceNamespacePrefix($expr['value_dtype'], RDF_RDQL_ERROR_AND);
+                            $result = $this->_replaceNamespacePrefix($expr['value_dtype'], RDF_RDQL_ERROR_AND);
+                            if (PEAR::isError($result)) {
+                                return $result;
+                            }
+                            $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype'] = $result;
                             unset($this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype_is_qname']);
                         } else {
                             foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
@@ -776,7 +865,10 @@ class RDF_RDQL_Parser extends RDF_Object {
                 return RDF_RDQL::raiseError($clause_error, null, null, $errmsg);
             } else {
                 unset($this->tokens[key($this->tokens)]);
-                $this->_checkComma(false, $clause_error);
+                $result = $this->_checkComma(false, $clause_error);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
         }
     }
@@ -795,7 +887,10 @@ class RDF_RDQL_Parser extends RDF_Object {
         if ($token{0} == '?') {
             $token_res['value'] = $this->_validateVar($token, RDF_RDQL_ERROR_WHERE);
         } else {
-            $token_res['value'] = $this->_validateUri($token, RDF_RDQL_ERROR_WHERE);
+            $token_res['value'] = $this->_validateURI($token, RDF_RDQL_ERROR_WHERE);
+            if (PEAR::isError($token_res['value'])) {
+                return $token_res['value'];
+            }
             if ($token{0} != '<') {
                 $token_res['is_qname'] = true;
             }
@@ -821,14 +916,27 @@ class RDF_RDQL_Parser extends RDF_Object {
     function _validateVarUriLiteral($token)
     {
         if ($token{0} == '?') {
-            $statement_object['value'] = $this->_validateVar($token, RDF_RDQL_ERROR_WHERE);
+            $result = $this->_validateVar($token, RDF_RDQL_ERROR_WHERE);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+            $statement_object['value'] = $result;
         } elseif ($token{0} == "'" || $token{0} == '"') {
             $statement_object = $this->_validateLiteral($token);
+            if (PEAR::isError($statement_object)) {
+                return $statement_object;
+            }
         } elseif ($token{0} == '<') {
-            $statement_object['value'] = $this->_validateUri($token, RDF_RDQL_ERROR_WHERE);
+            $statement_object['value'] = $this->_validateURI($token, RDF_RDQL_ERROR_WHERE);
+            if (PEAR::isError($statement_object['value'])) {
+                return $statement_object['value'];
+            }
         } elseif (ereg(':', $token)) {
-            $statement_object['value'] = $this->_validateUri($token, RDF_RDQL_ERROR_WHERE);
-            $statement_object['is_qname'] = TRUE;
+            $statement_object['value'] = $this->_validateURI($token, RDF_RDQL_ERROR_WHERE);
+            if (PEAR::isError($statement_object['value'])) {
+                return $statement_object['value'];
+            }
+            $statement_object['is_qname'] = true;
         } else {
             $errmsg = " '$token' - ?Variable, &lt;URI&gt;, QName, or \"LITERAL\" expected";
             return RDF_RDQL::raiseError(RDF_RDQL_ERROR_WHR, null, null, $errmsg);
@@ -866,12 +974,18 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @throws PHPError
      * @access private
      */
-    function _validateUri($token, $clause_error)
+    function _validateURI($token, $clause_error)
     {
         if ($token{0} != '<') {
-            if (strpos($token, ':') && $this->_validateQName($token, $clause_error)) {
-                unset($this->tokens[key($this->tokens)]);
-                return rtrim($token, ':');
+            if (strpos($token, ':')) {
+                $result = $this->_validateQName($token, $clause_error);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
+                if ($result) {
+                    unset($this->tokens[key($this->tokens)]);
+                    return rtrim($token, ':');
+                }
             }
             if ($clause_error == RDF_RDQL_ERROR_WHERE) {
                 $errmsg = htmlspecialchars($token)
@@ -946,7 +1060,10 @@ class RDF_RDQL_Parser extends RDF_Object {
                             . $token . " - datatype expected";
                         return RDF_RDQL::raiseError(RDF_RDQL_ERROR_WHERE, null, null, $errmsg);
                     }
-                    $statement_object['l_dtype'] = $this->_validateUri($dtype, RDF_RDQL_ERROR_WHERE);
+                    $statement_object['l_dtype'] = $this->_validateURI($dtype, RDF_RDQL_ERROR_WHERE);
+                    if (PEAR::isError($statement_object['l_dtype'])) {
+                        return $statement_object['l_dtype'];
+                    }
                     if ($dtype{0} != '<') {
                         $statement_object['l_dtype_is_qname'] = true;
                     }
@@ -968,7 +1085,10 @@ class RDF_RDQL_Parser extends RDF_Object {
                         . $token . " - datatype expected";
                     return RDF_RDQL::raiseError(RDF_RDQL_ERROR_WHERE, null, null, $errmsg);
                 }
-                $statement_object['l_dtype'] = $this->_validateUri($dtype, RDF_RDQL_ERROR_WHERE);
+                $statement_object['l_dtype'] = $this->_validateURI($dtype, RDF_RDQL_ERROR_WHERE);
+                if (PEAR::isError($statement_object['l_dtype'])) {
+                    return $statement_object['l_dtype'];
+                }
                 if ($dtype{0} != '<') {
                     $statement_object['l_dtype_is_qname'] = true;
                 }
@@ -1078,7 +1198,10 @@ class RDF_RDQL_Parser extends RDF_Object {
     function _checkSelectVars()
     {
         foreach ($this->parsedQuery['selectVars'] as $var) {
-            $this->_isDefined($var);
+            $result = $this->_isDefined($var);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
         }
     }
 
@@ -1093,6 +1216,9 @@ class RDF_RDQL_Parser extends RDF_Object {
     function _isDefined($var)
     {
         $allQueryVars = $this->findAllQueryVariables();
+        if (PEAR::isError($allQueryVars)) {
+            return $allQueryVars;
+        }
 
         if (!in_array($var, $allQueryVars)) {
             $errmsg = "'$var' - variable must be defined in the WHERE clause";
