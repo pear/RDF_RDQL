@@ -18,7 +18,7 @@ class RDF_RDQL_Engine extends RDF_Object
      * You can change the colors in the configuration file.
      *
      * @param array $queryResult [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function writeQueryResultAsHtmlTable($queryResult)
     {

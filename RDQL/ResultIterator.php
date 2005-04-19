@@ -18,7 +18,7 @@ class RDF_RDQL_ResultIterator extends RDF_Object
      * Reference to the RDQL result
      *
      * @var array RDQLResult
-     * @access private
+     * @access protected
      */
     var $RDQLResult;
 
@@ -28,7 +28,7 @@ class RDF_RDQL_ResultIterator extends RDF_Object
      * so you can use serveral iterators on a single RDQL result.
      *
      * @var integer
-     * @access private
+     * @access protected
      */
     var $position;
 

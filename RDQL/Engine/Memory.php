@@ -44,7 +44,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *                                                ['value_dtype'] = string
      *                                ['numExpr']['vars'][] = ?VARNAME
      *                          ( [] stands for an integer index - 0..N )
-     * @access private
+     * @access protected
      */
     var $parsedQuery;
 
@@ -90,7 +90,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *
      * @param object Model_Memory  &$Model_Memory
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function findTuplesMatchingAllPatterns(&$Model_Memory)
     {
@@ -114,7 +114,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *                                      ['l_lang'] = string
      *                                      ['l_dtype'] = string
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function findTuplesMatchingOnePattern(&$Model_Memory, &$pattern)
     {
@@ -206,7 +206,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      * @param string $objDtype
      * @param array $intBindings [] = string
      * @return object Model_Memory
-     * @access private
+     * @access protected
      */
     function findTriplesMatchingPattern(&$Model_Memory, $subjLabel, $predLabel, $obj_is,
         $objLabel, $objLang, $objDtype, &$intBindings)
@@ -306,7 +306,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      * @param array &$finalRes [][?VARNAME] = object Node
      * @param array &$res      [][?VARNAME] = object Node
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function joinTuples(&$finalRes, &$res)
     {
@@ -372,7 +372,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *
      * @param array &$finalRes  [][?VARNAME] = object Node
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function filterTuples(&$finalRes)
     {
@@ -477,7 +477,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *
      * @param array &$finalRes  [][?VARNAME] = object Node
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function selectVariables(&$finalRes)
     {
@@ -508,7 +508,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      *
      * @param array &$finalRes  [][?VARNAME] = object Node
      * @return array [][?VARNAME] = string
-     * @access private
+     * @access protected
      */
     function toString(&$finalRes)
     {
@@ -539,7 +539,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      * @param object statement &$triple
      * @param array &$intBindings [] = string
      * @return boolean
-     * @access private
+     * @access protected
      */
     function _checkIntBindings (&$triple, &$intBindings)
     {
@@ -577,7 +577,7 @@ class RDF_RDQL_Engine_Memory extends RDF_RDQL_Engine
      * @param string $dtype1
      * @param string $dtype2
      * @return boolean
-     * @access private
+     * @access protected
      */
     function _equalsLangDtype (&$literal, $lang, $dtype)
     {

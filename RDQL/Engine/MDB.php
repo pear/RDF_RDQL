@@ -45,7 +45,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                                                ['value_dtype'] = string
      *                                ['numExpr']['vars'][] = ?VARNAME
      *                          ( [] stands for an integer index - 0..N )
-     * @access private
+     * @access protected
      */
     var $parsedQuery;
 
@@ -59,7 +59,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                           ['nType'] = integer
      *                           ['l_lang'] = integer
      *                           ['l_dtype'] = integer
-     * @access private
+     * @access protected
      */
     var $rsIndexes;
 
@@ -98,7 +98,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *
      * @param integer $modelID
      * @return string
-     * @access private
+     * @access protected
      */
     function generateSql($modelID)
     {
@@ -113,7 +113,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function generateSql_SelectClause()
     {
@@ -149,7 +149,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      * Generate SQL FROM clause
      *
      * @return string
-     * @access private
+     * @access protected
      */
     function generateSql_FromClause()
     {
@@ -166,7 +166,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *
      * @param integer $modelID
      * @return string
-     * @access private
+     * @access protected
      */
     function generateSql_WhereClause($modelID)
     {
@@ -229,7 +229,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                              ['nType']   = string
      *                              ['l_lang']  = string
      *                              ['l_dtype'] = string
-     * @access private
+     * @access protected
      */
     function filterQueryResult(&$recordSet)
     {
@@ -358,7 +358,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                                            ['l_lang']  = string
      *                                            ['l_dtype'] = string
      * @return array [][?VARNAME] = string
-     * @access private
+     * @access protected
      */
     function toString(&$queryResult)
     {
@@ -399,7 +399,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                                            ['l_lang']  = string
      *                                            ['l_dtype'] = string
      * @return array [][?VARNAME] = object Node
-     * @access private
+     * @access protected
      */
     function toNodes(&$queryResult)
     {
@@ -447,7 +447,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *
      * @param string $varName
      * @return string
-     * @access private
+     * @access protected
      */
     function _generateSql_SelectVar(&$index, $varName)
     {
@@ -508,7 +508,7 @@ class RDF_RDQL_Engine_MDB extends RDF_RDQL_Engine
      *                            ['nType']   = string
      *                            ['l_lang']  = string
      *                            ['l_dtype'] = string
-     * @access private
+     * @access protected
      */
     function _convertRsRowToQueryResultRow(&$record)
     {

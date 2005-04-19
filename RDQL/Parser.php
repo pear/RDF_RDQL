@@ -50,7 +50,7 @@ class RDF_RDQL_Parser extends RDF_Object {
  *                               ['numExpr']['vars'][] = ?VARNAME
  *                 {['ns'][PREFIX] = NAMESPACE}    
 
-     * @access private
+     * @access protected
      */
     var $parsedQuery;
 
@@ -60,7 +60,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * or a string containing any characters except from the above.
      *
      * @var array
-     * @access private
+     * @access protected
      */
     var $tokens;
 
@@ -101,7 +101,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $query
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function removeComments($query)
     {
@@ -173,7 +173,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * or a string containing any character except from the above.
      *
      * @param string $queryString
-     * @access private
+     * @access protected
      */
     function tokenize($queryString)
     {
@@ -199,7 +199,7 @@ class RDF_RDQL_Parser extends RDF_Object {
     /**
      * Start parsing of the tokenized query string.
      *
-     * @access private
+     * @access protected
      */
     function startParsing()
     {
@@ -212,7 +212,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * a suitable method to parse the subsequent clause.
      *
      * @throws PhpError
-     * @access private
+     * @access protected
      */
     function parseSelect()
     {
@@ -300,7 +300,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * When the parsing of this clause is finished, parseWhere() will be called.
      *
      * @throws PhpError
-     * @access private
+     * @access protected
      */
     function parseFrom()
     {
@@ -353,7 +353,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * a suitable method to parse the subsequent clause if provided.
      *
      * @throws PhpError
-     * @access private
+     * @access protected
      */
     function parseWhere()
     {
@@ -437,7 +437,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * Parse the AND clause of an RDQL query
      *
      * @throws PhpError
-     * @access private
+     * @access protected
      * @toDo clear comments
      */
     function parseAnd()
@@ -476,7 +476,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * Parse the USING clause of an RDQL query
      *
      * @throws PhpError
-     * @access private
+     * @access protected
      */
     function parseUsing()
     {
@@ -529,7 +529,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param integer $n
      * @param string $filter
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function parseFilter($n, $filter)
     {
@@ -577,7 +577,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      *                                  ['value_dtype'] = string
      *                                  ['value_dtype_is_qname'] = boolean
      *                   ['numExpr']['vars'][] = ?VARNAME
-     * @access private
+     * @access protected
      */
     function parseExpressions($filterStr)
     {
@@ -694,7 +694,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * Find all query variables used in the WHERE clause.
      *
      * @return array [] = ?VARNAME
-     * @access private
+     * @access protected
      */
     function findAllQueryVariables()
     {
@@ -722,7 +722,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * Replace all namespace prefixes in the pattern and constraint clause of an RDQL query
      * with the namespaces declared in the USING clause and default namespaces.
      *
-     * @access private
+     * @access protected
      */
     function replaceNamespacePrefixes()
     {
@@ -834,7 +834,7 @@ class RDF_RDQL_Parser extends RDF_Object {
     /**
      * Remove whitespace-tokens from the array $this->tokens
      *
-     * @access private
+     * @access protected
      */
     function _clearWhiteSpaces()
     {
@@ -854,7 +854,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $commaExpected
      * @param string $clause_error
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _checkComma($commaExpected, $clause_error)
     {
@@ -880,7 +880,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $token
      * @return array ['value'] = string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validateVarUri($token)
     {
@@ -911,7 +911,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      *                 ['l_lang'] = string
      *                 ['l_dtype'] = string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validateVarUriLiteral($token)
     {
@@ -951,7 +951,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $clause
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validateVar($token, $clause_error)
     {
@@ -972,7 +972,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $clause_error
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validateURI($token, $clause_error)
     {
@@ -1030,7 +1030,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      *                   ['l_dtype'] = string
      *                   ['l_dtype_is_qname'] = boolean
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validateLiteral($token)
     {
@@ -1115,7 +1115,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param   string  $clause_error
      * @return  boolean
      * @throws  PHPError
-     * @access	private
+     * @access	protected
      */
     function _validateQName($token, $clause_error)
     {
@@ -1141,7 +1141,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      *
      * @param   string  $token
      * @return  boolean
-     * @access	private
+     * @access	protected
      */ 
     function _validateNCName($token)
     {
@@ -1158,7 +1158,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $token
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _validatePrefix($token)
     {
@@ -1178,7 +1178,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param   string  $clasue_error
      * @return  string
      * @throws  PHPError
-     * @access	private
+     * @access	protected
      */ 
      function _replaceNamespacePrefix($qName, $clause_error)
      {
@@ -1193,7 +1193,7 @@ class RDF_RDQL_Parser extends RDF_Object {
     /**
      * Check if all variables from the SELECT clause are defined in the WHERE clause
      *
-     * @access private
+     * @access protected
      */
     function _checkSelectVars()
     {
@@ -1211,7 +1211,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param  $var string
      * @return string
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _isDefined($var)
     {
@@ -1234,7 +1234,7 @@ class RDF_RDQL_Parser extends RDF_Object {
      * @param string $lQuotMark
      * @param string $rQuotMark
      * @throws PHPError
-     * @access private
+     * @access protected
      */
     function _checkRegExQuotation($filterString, $lQuotMark, $rQuotMark)
     {
