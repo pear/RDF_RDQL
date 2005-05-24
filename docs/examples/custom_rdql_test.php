@@ -42,12 +42,12 @@
 if (!isset($_POST['submit']) OR (strlen($_POST['query_string']) > 1000)) {
     // Show error message if the rdf is too long
     if ((isset($_POST['submit']) AND (strlen($_POST['query_string']) > 1000))) {
-        echo "<center><a href='" . $HTTP_SERVER_VARS['PHP_SELF'] . "'><h2>Go back to input form.</h2></a></center>";
+        echo "<center><a href='" . $_SERVER['SCRIPT_NAME'] . "'><h2>Go back to input form.</h2></a></center>";
         echo "<center><p class='rdql_comment'>We're sorry, but your RDQL query is bigger than the allowed size of 1000 characters</p></center>";
     } ;
 
     ?>
-<form method="post" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF'];
+<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME'];
     ?>">
       Paste an <a href="http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/rdql_grammar.htm">RDQL</a> query string into the text field below.
       In the FROM clause you can indicate an URL or a path for local RDF document to be queried.
@@ -94,7 +94,7 @@ USING desc FOR <http://description.org/schema/>
     require_once 'RDF/Model/Memory.php';
     require_once 'RDF/RDQL.php';
 
-    echo "<center><a href='" . $HTTP_SERVER_VARS['PHP_SELF'] . "'>
+    echo "<center><a href='" . $_SERVER['SCRIPT_NAME'] . "'>
          <h2>Go back to input form.</h2></a></center>";
 
     if (isset($_POST['query_string'])) {
