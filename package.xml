@@ -7,12 +7,6 @@
 http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.</description>
   <maintainers>
     <maintainer>
-      <user>lsmith</user>
-      <name>Lukas Kahwe Smith</name>
-      <email>smith@backendmedia.com</email>
-      <role>lead</role>
-    </maintainer>
-    <maintainer>
       <user>davey</user>
       <name>Davey Shafik</name>
       <email>davey@php.net</email>

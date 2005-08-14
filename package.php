@@ -38,7 +38,6 @@ if (PEAR::isError($result)) {
     die();
 }
 
-$package->addMaintainer('lsmith', 'lead', 'Lukas Kahwe Smith', 'smith@backendmedia.com');
 $package->addMaintainer('davey', 'lead', 'Davey Shafik', 'davey@php.net');
 
 $package->addDependency('php', '4.2.0', 'ge', 'php', false);
