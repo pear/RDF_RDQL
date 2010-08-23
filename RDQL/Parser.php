@@ -745,7 +745,7 @@ class RDF_RDQL_Parser extends RDF_Object {
                     $this->parsedQuery['sources'][$n] = $result;
                 } else {
                     foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
-                        $source['value'] = eregi_replace("$prefix:", $uri, $source['value']);
+                        $source['value'] = preg_replace('/'.$prefix.':/i', $uri, $source['value']);
                     }
                    $this->parsedQuery['sources'][$n] = $source['value'];
                 }
@@ -775,13 +775,13 @@ class RDF_RDQL_Parser extends RDF_Object {
                             } else {
                                 foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                                     $this->parsedQuery['patterns'][$n][$key]['l_dtype']
-                                        = eregi_replace("$prefix:", $uri, $this->parsedQuery['patterns'][$n][$key]['l_dtype']);
+                                        = preg_replace('/'.$prefix.':/i', $uri, $this->parsedQuery['patterns'][$n][$key]['l_dtype']);
                                 }
                             }
                         } else {
                             foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                                 $this->parsedQuery['patterns'][$n][$key]['value']
-                                    = eregi_replace("$prefix:", $uri, $this->parsedQuery['patterns'][$n][$key]['value']);
+                                    = preg_replace('/'.$prefix.':/i', $uri, $this->parsedQuery['patterns'][$n][$key]['value']);
                             }
                         }
                     }
@@ -804,7 +804,7 @@ class RDF_RDQL_Parser extends RDF_Object {
                     if ($expr['value_type'] == 'URI') {
                         foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                             $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value']
-                                = eregi_replace("$prefix:", $uri, $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value']);
+                                = preg_replace('/'.$prefix.':/i', $uri, $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value']);
                         }
                     } elseif ($expr['value_type'] == 'Literal') {
                         if (isset($expr['value_dtype_is_qname'])) {
@@ -817,7 +817,7 @@ class RDF_RDQL_Parser extends RDF_Object {
                         } else {
                             foreach ($this->parsedQuery['ns'] as $prefix => $uri) {
                                 $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype']
-                                    = eregi_replace("$prefix:", $uri, $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype']);
+                                    = preg_replace('/'.$prefix.':/i', $uri, $this->parsedQuery['filters'][$n]['strEqExprs'][$i]['value_dtype']);
                             }
                         }
                     }
@@ -931,7 +931,7 @@ class RDF_RDQL_Parser extends RDF_Object {
             if (PEAR::isError($statement_object['value'])) {
                 return $statement_object['value'];
             }
-        } elseif (ereg(':', $token)) {
+        } elseif (strpos($token, ':') !== false) {
             $statement_object['value'] = $this->_validateURI($token, RDF_RDQL_ERROR_WHERE);
             if (PEAR::isError($statement_object['value'])) {
                 return $statement_object['value'];
