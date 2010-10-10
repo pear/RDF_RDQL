@@ -1,82 +1,135 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0">
-  <name>RDF_RDQL</name>
-  <summary>Port of the RAP RDQL API</summary>
-  <description>This package is a port of the RDQL part of the RDF API for PHP (aka RAP):
-http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.</description>
-  <maintainers>
-    <maintainer>
-      <user>davey</user>
-      <name>Davey Shafik</name>
-      <email>davey@php.net</email>
-      <role>lead</role>
-    </maintainer>
-  </maintainers>
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>RDF_RDQL</name>
+ <channel>pear.php.net</channel>
+ <summary>Port of the RAP RDQL API</summary>
+ <description>This package is a port of the RDQL part of the RDF API for PHP (aka RAP):
+http://www.wiwiss.fu-berlin.de/suhl/bizer/rdfapi/.
+ </description>
+ <lead>
+  <name>Davey Shafik</name>
+  <user>davey</user>
+  <email>davey@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-10-10</date>
+ <time>13:45:19</time>
+ <version>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+ <notes>
+- fixed several incorrect calls to RDF::raiseError()
+- propagate PEAR errors to the user
+- cosmetic fixes
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="docs">
+    <dir name="examples">
+     <file baseinstalldir="/RDF" name="custom_rdql_test.php" role="doc" />
+     <file baseinstalldir="/RDF" name="phpdoc.css" role="doc" />
+     <file baseinstalldir="/RDF" name="phpdoc.dtd" role="doc" />
+     <file baseinstalldir="/RDF" name="php_logo.gif" role="doc" />
+     <file baseinstalldir="/RDF" name="rdf_metadata_button.gif" role="doc" />
+     <file baseinstalldir="/RDF" name="test_RdqlQuery.php" role="doc" />
+    </dir> <!-- /docs/examples -->
+   </dir> <!-- /docs -->
+   <dir name="RDQL">
+    <dir name="Engine">
+     <file baseinstalldir="/RDF" name="MDB.php" role="php" />
+     <file baseinstalldir="/RDF" name="Memory.php" role="php" />
+    </dir> <!-- /RDQL/Engine -->
+    <file baseinstalldir="/RDF" name="Engine.php" role="php" />
+    <file baseinstalldir="/RDF" name="Parser.php" role="php" />
+    <file baseinstalldir="/RDF" name="ResultIterator.php" role="php" />
+   </dir> <!-- /RDQL -->
+   <file baseinstalldir="/RDF" name="RDQL.php" role="php" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.2.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+   <package>
+    <name>PEAR</name>
+    <channel>pear.php.net</channel>
+    <min>1.0b1</min>
+   </package>
+   <package>
+    <name>RDF</name>
+    <channel>pear.php.net</channel>
+   </package>
+  </required>
+  <optional>
+   <package>
+    <name>MDB</name>
+    <channel>pear.php.net</channel>
+   </package>
+  </optional>
+ </dependencies>
+ <phprelease />
+ <changelog>
   <release>
-    <version>0.2.0</version>
-    <date>2004-12-28</date>
-    <license>LGPL</license>
-    <state>alpha</state>
-    <notes>- fixed several incorrect calls to RDF::raiseError()
+   <version>
+    <release>0.2.0</release>
+    <api>0.2.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2004-12-28</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+- fixed several incorrect calls to RDF::raiseError()
 - propagate PEAR errors to the user
-- cosmetic fixes</notes>
-    <deps>
-      <dep type="php" rel="ge" version="4.2.0" optional="no"/>
-      <dep type="pkg" rel="ge" version="1.0b1" optional="no">PEAR</dep>
-      <dep type="pkg" rel="has" optional="yes">MDB</dep>
-      <dep type="pkg" rel="has" optional="no">RDF</dep>
-    </deps>
-    <filelist>
-      <dir baseinstalldir="/RDF" name="/">
-       <dir name="docs">
-        <dir name="examples">
-         <file role="doc" name="custom_rdql_test.php"/>
-         <file role="doc" name="phpdoc.css"/>
-         <file role="doc" name="phpdoc.dtd"/>
-         <file role="doc" name="php_logo.gif"/>
-         <file role="doc" name="rdf_metadata_button.gif"/>
-         <file role="doc" name="test_RdqlQuery.php"/>
-        </dir> <!-- docs/examples -->
-       </dir> <!-- docs -->
-       <dir name="RDQL">
-        <file role="php" name="Engine.php"/>
-        <file role="php" name="Parser.php"/>
-        <file role="php" name="ResultIterator.php"/>
-        <dir name="Engine">
-         <file role="php" name="MDB.php"/>
-         <file role="php" name="Memory.php"/>
-        </dir> <!-- RDQL/Engine -->
-       </dir> <!-- RDQL -->
-       <file role="php" name="RDQL.php"/>
-      </dir> <!-- / -->
-    </filelist>
+- cosmetic fixes
+   </notes>
   </release>
-  <changelog>
-    <release>
-      <version>0.2.0</version>
-      <date>2004-12-28</date>
-      <license>LGPL</license>
-      <state>alpha</state>
-      <notes>- fixed several incorrect calls to RDF::raiseError()
+  <release>
+   <version>
+    <release>0.2.0alpha1</release>
+    <api>0.2.0alpha1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2004-12-28</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+- fixed several incorrect calls to RDF::raiseError()
 - propagate PEAR errors to the user
-- cosmetic fixes</notes>
-    </release>
-    <release>
-      <version>0.2.0alpha1</version>
-      <date>2004-12-28</date>
-      <license>LGPL</license>
-      <state>alpha</state>
-      <notes>- fixed several incorrect calls to RDF::raiseError()
-- propagate PEAR errors to the user
-- cosmetic fixes</notes>
-    </release>
-    <release>
-      <version>0.1.0alpha1</version>
-      <date>2004-09-21</date>
-      <license>LGPL</license>
-      <state>alpha</state>
-      <notes>- initial release</notes>
-    </release>
-  </changelog>
+- cosmetic fixes
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.1.0alpha1</release>
+    <api>0.1.0alpha1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2004-09-21</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+- initial release
+   </notes>
+  </release>
+ </changelog>
 </package>
