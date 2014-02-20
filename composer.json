@@ -1,0 +1,35 @@
+{
+    "authors": [
+        {
+            "email": "davey@php.net",
+            "name": "Davey Shafik",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "RDF": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/RDF_RDQL",
+    "include-path": [
+        "./"
+    ],
+    "license": "LGPL",
+    "name": "pear/rdf_rdql",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=RDF_RDQL",
+        "source": "https://github.com/pear/RDF_RDQL"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*",
+        "pear/pear": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "pear/mdb": "Install optionally via your project's composer.json"
+    }
+}
